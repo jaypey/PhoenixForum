@@ -1,0 +1,32 @@
+<h1>Listing Posts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Date added</th>
+      <th>Number of comments</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for post <- @posts do %>
+    <tr>
+      <td><%= post.title %></td>
+      <td><%= post.user.firstname <> " " <> post.user.lastname %></td>
+      <td><%= post.inserted_at %></td>
+      <td><%= get_comments_count(post.id) %></td>
+      <td>
+        <span><%= link "Show", to: Routes.post_path(@conn, :show, post) %></span>
+        <%= if @conn.assigns.current_user.is_admin || post.user.id == @conn.assigns.current_user.id do %>
+        <span><%= link "Edit", to: Routes.post_path(@conn, :edit, post) %></span>
+        <span><%= link "Delete", to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        <% end %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Post", to: Routes.post_path(@conn, :new) %></span>

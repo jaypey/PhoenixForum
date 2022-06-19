@@ -1,0 +1,57 @@
+<% page = 1 %>
+<h3>Comments:</h3>
+<div class="comments">
+<%= for comment <- Enum.take(@comments,5) do %>
+  <div class={commentClass(page)}>
+    <div class="sides borderComment">
+      <h5 style="font-weight: bold; margin-bottom: 0px;">Name</h5>
+        <div><%= comment.user.firstname <> " " <> comment.user.lastname %></div>
+        <hr style="margin:0px;"/>
+      <h5 style="font-weight: bold;margin-bottom: 2px;">Comment</h5>
+        <div><span style="white-space: pre-line"><%= comment.content%></span></div>
+        <%= if @user.is_admin || comment.user.id == @user.id do %>
+      <span style="padding-left: 88%;"><%= link "Delete", to: Routes.post_post_path(@conn, :delete_comment, comment.post_id, comment), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      <% end %>
+    </div>
+    </div>
+  <% end %>
+  <% page = page + 1 %>
+
+  <%= if length(@comments) > 5 do %>
+      <%= for c <- Enum.drop(@comments, 5) do %>
+      <div style="display: none;" class={commentClass(incrementPage(page, Enum.find_index(@comments, fn x -> x == c end)))}>
+        <div class="sides borderComment">
+          <h5 style="font-weight: bold; margin-bottom: 0px;">Name</h5>
+            <div><%= c.user.firstname <> " " <> c.user.lastname %></div>
+            <hr style="margin:0px;"/>
+          <h5 style="font-weight: bold;margin-bottom: 2px;">Comment</h5>
+            <div><span style="white-space: pre-line"><%= c.content%></span></div>
+      <%= if @user.is_admin || c.user.id == @user.id do %>
+      <span style="padding-left: 88%;"><%= link "Delete", to: Routes.post_post_path(@conn, :delete_comment, c.post_id, c), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      <% end %>
+        </div>
+        
+      </div>
+      <% end %>
+      <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <%= for n <- 1..ceil length(@comments)/ 5 do %>
+            <li class="page-item"><a class="page-link navbutton"><%= n %></a></li>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+</div>
+
+<script>
+$(document).ready(function(){
+    $(".page").hide();
+    $(".page1").show();
+});
+
+$(".navbutton").click(function (){
+  var numPage = $(this).text()
+  $(".page").hide();
+  $(".page" + numPage).show();
+});
+</script>

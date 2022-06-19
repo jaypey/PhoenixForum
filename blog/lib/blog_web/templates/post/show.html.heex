@@ -1,0 +1,9 @@
+<h1 style="font-weight:bold"><%= @post.title %></h1>
+
+<p style="padding-left: 4%;font-size: 18px;"><%= @post.body %></p>
+<hr/>
+
+<%= render "comments.html", conn: @conn, user: @current_user,comments: @post.comments %>
+<%= render "comment_form.html", post: @post, changeset: @changeset, action: Routes.post_post_path(@conn, :add_comment, @post) %>
+
+<span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
